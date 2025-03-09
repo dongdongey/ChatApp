@@ -14,6 +14,7 @@ on:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         build:
           - name: 'ChatApp-linux'
@@ -48,6 +49,25 @@ jobs:
         run: |
           cd frontend
           npm install
+
+      - name: Linux Discovery
+        if: runner.os == 'Linux'
+        id: linux_discovery
+        run: |
+          sudo apt-get -yq update
+          DISTRO=$(lsb_release -rs) # Get the distribution version (e.g., "22.04", "24.04")
+          if [[ "$DISTRO" == "20.04" ]]; then
+            sudo apt-get -yq install libgtk-3-0 libwebkit2gtk-4.0-dev gcc-aarch64-linux-gnu
+          elif [[ "$DISTRO" == "22.04" ]]; then
+            sudo apt-get -yq install libgtk-3-0 libwebkit2gtk-4.0-dev gcc-aarch64-linux-gnu
+          elif [[ "$DISTRO" == "24.04" ]]; then
+            sudo apt-get -yq install libgtk-3-0 libwebkit2gtk-4.1-dev gcc-aarch64-linux-gnu
+          else
+            echo "Unsupported Linux distribution: $DISTRO"
+            exit 1 # Fail the workflow if the distribution is not supported
+          fi
+          echo "DISTRO=$DISTRO" >> "$GITHUB_OUTPUT"
+        shell: bash
 
       - name: Install Wails
         run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
