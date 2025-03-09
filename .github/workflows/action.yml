@@ -20,13 +20,13 @@ jobs:
       fail-fast: false
       matrix:
         build:
-          - name: 'App'
+          - name: 'ChatApp-linux'
             platform:  'linux/amd64'
             os: 'ubuntu-latest'
-          - name: 'App.exe'
+          - name: 'ChatApp-windows.exe'
             platform:  'windows/amd64'
             os: 'windows-latest'
-          - name: 'App'
+          - name: 'ChatApp-macos'
             platform:  'darwin/universal'
             os: 'macos-latest'
 
